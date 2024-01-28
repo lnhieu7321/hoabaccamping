@@ -1,7 +1,5 @@
-@extends('business.layouts.allbooking')
-@section('menu')
-@extends('business.sidebar.allservice')
-@endsection
+@extends('business.layouts.allservice')
+
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}
@@ -35,7 +33,7 @@
                             <div class="form-group">
                                 <label>Mô tả</label>
                                 <div>
-                                    <input type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $service->description }}">
+                                    <textarea type="text" class="form-control @error('description') is-invalid @enderror" name="description" id="description">{{ $service->description }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -99,15 +97,6 @@
         </form>
     </div>
 </div>
-@section('script')
-<script>
-    $(function() {
-        $('#datetimepicker3').datetimepicker({
-            format: 'LT'
-        });
-    });
-</script>
-
 <script>
     const imageInput = document.querySelector('input[type="file"]');
     const previewImage = document.querySelector('#preview-image');
@@ -123,6 +112,25 @@
         reader.readAsDataURL(file);
     });
 </script>
+@section('script')
+<script>
+    $(function() {
+        $('#datetimepicker3').datetimepicker({
+            format: 'LT'
+        });
+    });
+</script>
+
 @endsection
 
+@endsection
+
+@section('js-custom')
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 @endsection

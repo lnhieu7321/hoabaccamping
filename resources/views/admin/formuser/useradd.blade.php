@@ -1,7 +1,5 @@
-@extends('admin.layouts.allbooking')
-@section('menu')
-@extends('admin.sidebar.serviceadd')
-@endsection
+@extends('admin.layouts.allcustomer')
+
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}

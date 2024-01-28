@@ -1,7 +1,4 @@
-@extends('business.layouts.allbooking')
-@section('menu')
-@extends('business.sidebar.dashboard')
-@endsection
+@extends('business.layouts.master')
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}
@@ -14,7 +11,7 @@
                 </div>
             </div>
         </div>
-        <form action="{{route('profile.update.bs')}}" method="post" enctype="multipart/form-data">
+        <form action="{{route('profile/update/bs')}}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <div class="col-lg-12">
@@ -23,7 +20,6 @@
                             <div class="form-group">
                                 <img id="preview-image" class="mb-5" src="{{$business->logo}}" alt="Hình ảnh" style="width: 100px; height: 100px; border-radius: 50%; border: none;">
                                 <input type="file" name="image" class="form-control @error('logo') is-invalid @enderror" value="{{ $business->logo }}">
-
                             </div>
                         </div>
                         <div class="col-md-11">

@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $user = Auth::user();
         $totalBookings = Booking::whereHas('services.businesses', function ($query) use ($user) {
@@ -34,23 +34,107 @@ class DashboardController extends Controller
 
 
 
-        // Lấy doanh thu theo tháng
         $revenueData = Booking::whereHas('services.businesses', function ($query) use ($user) {
             $query->where('businesses.users_id', $user->id);
         })
-            ->where('status_book', 'approved')
-            ->selectRaw('DATE_FORMAT(start_date, "%Y-%m") as month, SUM(total_cost) as total_revenue')
+            ->where('status_book', 'đã duyệt')
+            ->selectRaw('DATE_FORMAT(start_date, "%m") as month, SUM(total_cost) as total_revenue')
+            ->whereYear('start_date', date('Y'))
             ->groupBy('month')
             ->get();
 
-        // Chuyển định dạng ngày để hiển thị trên biểu đồ
-        $formattedDates = json_encode($revenueData->pluck('month')->map(function ($date) {
-            return Carbon::createFromFormat('Y-m', $date)->format('M Y');
-        }));
+        $formattedDates = [
+            '01',
+            '02',
+            '03',
+            '04',
+            '05',
+            '06',
+            '07',
+            '08',
+            '09',
+            '10',
+            '11',
+            '12',
+        ];
 
-        // Lấy doanh thu từ kết quả query
-        $revenues = json_encode($revenueData->pluck('total_revenue'));
+        $revenues = [];
+        foreach ($revenueData as $revenue) {
+            $revenues[$revenue->month] = $revenue->total_revenue;
+        }
 
-        return view('business.home.dashboard', compact('totalBookings', 'totalServices', 'totalRatings', 'formattedDates', 'revenues'));
+        $ratings = Rating::whereHas('services.businesses', function ($query) use ($user) {
+            $query->where('businesses.users_id', $user->id);
+        })
+            ->get();
+
+        // Khởi tạo mảng để lưu trữ số người đã đánh giá
+        $ratingsCount = [
+            '5' => 0,
+            '4' => 0,
+            '3' => 0,
+            '2' => 0,
+            '1' => 0,
+        ];
+
+        // Duyệt qua tất cả các đánh giá
+        foreach ($ratings as $rating) {
+            // Thêm số người đã đánh giá cho từng mức độ
+            $ratingsCount[$rating->rate]++;
+        }
+        $daduyet = Booking::whereHas('services.businesses', function ($query) use ($user) {
+            $query->where('businesses.users_id', $user->id);
+        })
+            ->where('status_book', 'đã duyệt')  // Thêm điều kiện status_book
+            ->count();
+        $choduyet = Booking::whereHas('services.businesses', function ($query) use ($user) {
+            $query->where('businesses.users_id', $user->id);
+        })
+            ->where('status_book', 'chờ duyệt')  // Thêm điều kiện status_book
+            ->count();
+        $tuchoi = Booking::whereHas('services.businesses', function ($query) use ($user) {
+            $query->where('businesses.users_id', $user->id);
+        })
+            ->where('status_book', 'từ chối')  // Thêm điều kiện status_book
+            ->count();
+        $dahuy = Booking::whereHas('services.businesses', function ($query) use ($user) {
+            $query->where('businesses.users_id', $user->id);
+        })
+            ->where('status_book', 'đã hủy')  // Thêm điều kiện status_book
+            ->count();
+        /*$bookings = Booking::whereHas('services.businesses', function ($query) use ($user) {
+            $query->where('businesses.users_id', $user->id);
+        })
+            ->get();
+
+        // Khởi tạo mảng để lưu trữ số lượt book
+        $bookCounts = [
+            'đã duyệt' => 0,
+            'chờ duyệt' => 0,
+            'từ chối' => 0,
+            'đã hủy' => 0,
+        ];
+
+        // Duyệt qua tất cả các lượt book
+        foreach ($bookings as $booking) {
+            // Thêm số lượt book cho từng trạng thái
+            switch ($booking->status_book) {
+                case 'đã duyệt':
+                    $bookCounts['đã duyệt']++;
+                    break;
+                case 'chờ duyệt':
+                    $bookCounts['chờ duyệt']++;
+                    break;
+                case 'từ chối':
+                    $bookCounts['từ chối']++;
+                    break;
+                case 'đã hủy':
+                    $bookCounts['đã hủy']++;
+                    break;
+            }
+        }*/
+
+
+        return view('business.home.dashboard', compact('totalBookings', 'totalServices', 'totalRatings', 'formattedDates', 'revenues', 'ratingsCount', 'daduyet', 'choduyet', 'tuchoi', 'dahuy'));
     }
 }

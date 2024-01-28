@@ -57,6 +57,11 @@ class User extends Authenticatable
         return $this->hasOne(Customer::class, 'users_id');
     }
 
+    public function admins()
+    {
+        return $this->hasOne(Admin::class, 'users_id');
+    }
+
     public function user_statuses()
     {
 
@@ -76,7 +81,6 @@ class Business extends Model
         'ward',
         'district',
         'city',
-        'country',
         'fanpage_url',
         'website_url',
     ];

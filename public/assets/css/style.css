@@ -405,6 +405,10 @@ table.table td h2 span {
     border-radius: 50px;
 }
 
+.bg-changepass {
+    background-color: #93d994 !important;
+}
+
 .bg-primary,
 .badge-primary {
     background-color: #2962ff !important;
@@ -1691,7 +1695,7 @@ button.bg-danger:hover {
 }
 .logo-big,
 .logo-small {
-    padding-top: 30px;
+    padding-top: 8px;
 }
 
 .header .dropdown-menu > li > a {

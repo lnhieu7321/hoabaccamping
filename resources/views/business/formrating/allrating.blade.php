@@ -1,7 +1,6 @@
-@extends('business.layouts.allbooking')
-@section('menu')
+@extends('business.layouts.allrating')
+
 @extends('business.sidebar.allrating')
-@endsection
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}

@@ -1,7 +1,5 @@
-@extends('business.layouts.allbooking')
-@section('menu')
-@extends('business.sidebar.allservice')
-@endsection
+@extends('business.layouts.allservice')
+
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}
@@ -33,7 +31,6 @@
                                         <th>Địa chỉ</th>
                                         <th>Phường/ Quận</th>
                                         <th>Thành Phố</th>
-                                        <th>Quốc gia</th>
                                         <th class="text-right">Hành động</th>
                                     </tr>
                                 </thead>
@@ -57,7 +54,6 @@
                                         <td>{{ $services->ward . ', ' . $services->district ?? '' }}
                                         </td>
                                         <td>{{ $services->city }}</td>
-                                        <td>{{ $services->country }}</td>
                                         <td class="text-right">
                                             <div class="dropdown dropdown-action">
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false">

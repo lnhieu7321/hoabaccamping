@@ -1,14 +1,12 @@
 @extends('business.layouts.master')
-@section('menu')
-@extends('business.sidebar.dashboard')
-@endsection
+
 @section('content')
 <div class="page-wrapper">
     <div class="content container-fluid">
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12 mt-5">
-                    <h3 class="page-title mt-3">Hi, {{ Auth::user()->name }}</h3>
+                    <h3 class="page-title mt-3">Xin chào, {{ Auth::user()->name }}</h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item active">Trang chủ</li>
                     </ul>
@@ -16,7 +14,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-12 pl-5 pr-5">
                 <div class="statistics-details d-flex align-items-center justify-content-between mb-5">
                     <div>
                         <p class="statistics-title">Số lượng dịch vụ</p>
@@ -32,41 +30,68 @@
                         <p class="statistics-title">Số lượng đánh giá</p>
                         <h3 class="rate-percentage">{{$totalRatings}}</h3>
                     </div>
-
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12 d-flex">
+            <div class="col-md-8 d-flex">
                 <div class="card card-chart flex-fill">
                     <div class="card-header">
                         <h4 class="card-title">Biểu đồ thống kê doanh thu theo tháng</h4>
                     </div>
+
                     <div class="card-body">
-                        <canvas id="revenueChart"></canvas>
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div>
+                    <div class="card card-chart flex-fill">
+                        <div class="card-header">
+                            <h4 class="card-title">Biểu đồ số lượt đánh giá</h4>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="ratings-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card card-chart flex-fill">
+                        <div class="card-header">
+                            <h4 class="card-title">Biểu đồ số lượt đặt theo trạng thái</h4>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="book-counts-chart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
 
+
         </div>
+
 
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 
 <script>
-    var ctx = document.getElementById('revenueChart').getContext('2d');
-    var labels = $formattedDates;
-    var data = $revenues;
+    var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
+            labels: <?php echo json_encode($formattedDates); ?>,
             datasets: [{
-                label: 'Monthly Revenue',
-                data: $revenues,
-                borderColor: 'rgba(75, 192, 192, 1)',
+                label: 'Doanh thu',
+                data: <?php echo json_encode($revenues); ?>,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1
             }]
         },
@@ -77,6 +102,55 @@
                 }
             }
         }
+    });
+</script>
+<script>
+    var ctx = document.getElementById('ratings-chart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['5', '4', '3', '2', '1'],
+            datasets: [{
+                data: <?php echo json_encode($ratingsCount); ?>,
+                label: 'Số lượt đánh giá',
+                backgroundColor: [
+                    '#0088FF',
+                    '#00FF00',
+                    '#FFFF00',
+                    '#FF0000',
+                    '#880000',
+                ],
+            }],
+        },
+        options: {
+            title: {
+                text: 'Biểu đồ đánh giá',
+            },
+        },
+    });
+</script>
+<script>
+    var ctx = document.getElementById('book-counts-chart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['đã duyệt', 'chờ duyệt', 'từ chối', 'đã hủy'],
+            datasets: [{
+                data: [<?php echo json_encode($daduyet); ?>, <?php echo json_encode($choduyet); ?>, <?php echo json_encode($tuchoi); ?>, <?php echo json_encode($dahuy); ?>],
+                label: 'Số lượt đặt',
+                backgroundColor: [
+                    '#0088FF',
+                    '#00FF00',
+                    '#FFFF00',
+                    '#FF0000',
+                ],
+            }],
+        },
+        options: {
+            title: {
+                text: 'Biểu đồ lượt book',
+            },
+        },
     });
 </script>
 

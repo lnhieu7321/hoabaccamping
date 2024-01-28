@@ -1,7 +1,5 @@
 @extends('admin.layouts.allbooking')
-@section('menu')
-@extends('admin.sidebar.allbooking')
-@endsection
+
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}
@@ -12,7 +10,12 @@
                 <div class="col">
                     <div class="mt-5">
                         <h4 class="card-title float-left mt-2">Quản lý đặt chỗ</h4>
-                        <!--<button class="btn btn-primary float-right veiwbutton" type="submit">Xóa</button>-->
+                        <div class="top-nav-search float-right mt-2">
+                            <form method="get" action="{{route('adminsearch')}}">
+                                <input type="search" name="query" placeholder="Tìm kiếm..." class="form-control">
+                                <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -22,12 +25,6 @@
                 <div class="card card-table">
                     <div class="card-body booking_card">
                         <div class="col-sm-3">
-                            <div class="input-group">
-                                <input type="text" class="input-sm form-control" placeholder="Search">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-sm btn-default btn-search" type="button">Go!</button>
-                                </span>
-                            </div>
                         </div>
                         <div class="table-responsive">
                             <table class="datatable table table-stripped table table-hover table-center mb-0 table-filter b-t b-light" id="myTable">
@@ -77,6 +74,9 @@
                                                     <a class="dropdown-item bookingDelete" href="{{ route('admincancelBooking', $adbookings->id) }}">
                                                         <i class="fas fa-times m-r-5"></i> Hủy
                                                     </a>
+                                                    <a class="dropdown-item bookingDelete" href="#" data-toggle="modal" data-target="#delete_asset">
+                                                        <i class="fas fa-trash-alt m-r-5"></i> Xóa
+                                                    </a>
 
                                                 </div>
                                             </div>
@@ -91,6 +91,30 @@
             </div>
         </div>
     </div>
+    {{-- Model delete --}}
+    <div class="modal fade" id="delete_asset">
+        <div class="modal-dialog">
+            <form action="{{ route('adminbooking/delete', $adbookings->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Xác nhận xóa</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Bạn có chắc chắn muốn xóa đơn này không?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    {{-- End Model delete --}}
 
 </div>
 

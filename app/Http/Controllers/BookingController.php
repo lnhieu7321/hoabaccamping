@@ -56,4 +56,27 @@ class BookingController extends Controller
             return redirect()->back();
         }
     }
+
+    public function search(Request $request)
+    {
+        $search_text = $_GET['query'] ?? '';
+        $user = Auth::user();
+
+        $allBookings = Booking::where(function ($query) use ($search_text) {
+            $query->where('id', 'like', '%' . $search_text . '%');
+        })
+            ->whereHas('services.businesses', function ($query) use ($user) {
+                $query->where('businesses.users_id', $user->id);
+            })
+            /*->orWhereHas('customers.users', function ($query) use ($search_text) {
+                $query->where('email', 'like', '%' . $search_text . '%')
+                    ->orWhere('phone', 'like', '%' . $search_text . '%');
+            })*/
+            // Thêm điều kiện lọc theo doanh nghiệp đang đăng nhập
+
+            ->orderByDesc('id')->get();
+
+
+        return view('business.formbooking.allbooking', compact('allBookings'));
+    }
 }

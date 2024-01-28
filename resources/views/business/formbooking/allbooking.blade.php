@@ -1,7 +1,4 @@
 @extends('business.layouts.allbooking')
-@section('menu')
-@extends('business.sidebar.allbooking')
-@endsection
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}
@@ -12,7 +9,14 @@
                 <div class="col">
                     <div class="mt-5">
                         <h4 class="card-title float-left mt-2">Quản lý đặt chỗ</h4>
-                        <!--<button class="btn btn-primary float-right veiwbutton" type="submit">Xóa</button>-->
+
+                        <div class="top-nav-search float-right mt-2">
+                            <form method="get" action="{{route('search')}}">
+                                <input type="search" name="query" placeholder="Tìm kiếm..." class="form-control">
+                                <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -21,6 +25,7 @@
             <div class="col-sm-12">
                 <div class="card card-table">
                     <div class="card-body booking_card">
+
                         <div class="table-responsive">
                             <table class="datatable table table-stripped table table-hover table-center mb-0">
                                 <thead>
@@ -29,8 +34,7 @@
                                         <th>Mã đơn</th>
                                         <th>Tên khách hàng</th>
                                         <th>Dạng đặt</th>
-                                        <th>Vé người lớn</th>
-                                        <th>Vé trẻ em</th>
+                                        <th>Số vé</th>
                                         <th>Từ ngày</th>
                                         <th>Đến ngày</th>
                                         <th>Tổng tiền</th>
@@ -49,10 +53,9 @@
                                         </td>
                                         <td>{{ $bookings->type_of_day }}</td>
                                         <td>{{ $bookings->number_of_adults }}</td>
-                                        <td>{{ $bookings->number_of_children }}</td>
                                         <td>{{ $bookings->start_date }}</td>
                                         <td>{{ $bookings->end_date }}</td>
-                                        <td>{{number_format( $bookings->total_cost,  2, '.', ','). ' ₫'}}</td>
+                                        <td>{{number_format( $bookings->total_cost,  0, '.', ','). ' ₫'}}</td>
                                         <td>{{ $bookings->customers->users->email ?? ''}}</td>
                                         <td>{{ $bookings->customers->users->phone ?? ''}}</td>
                                         <td>

@@ -1,7 +1,5 @@
-@extends('admin.layouts.allbooking')
-@section('menu')
-@extends('admin.sidebar.allrating')
-@endsection
+@extends('admin.layouts.allrating')
+
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}
@@ -21,8 +19,10 @@
             <div class="col-sm-12">
                 <div class="card card-table">
                     <div class="card-body booking_card">
+                        <div class="col-sm-3">
+                        </div>
                         <div class="table-responsive">
-                            <table class="datatable table table-stripped table table-hover table-center mb-0">
+                            <table class="datatable table table-stripped table table-hover table-center mb-0 table-filter b-t b-light" id="myTable">
                                 <thead>
                                     <tr>
 

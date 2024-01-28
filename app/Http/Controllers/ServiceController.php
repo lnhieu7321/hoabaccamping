@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Businesse;
+use App\Models\Favorite;
 use App\Models\Image;
+use App\Models\Price;
+use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Brian2694\Toastr\Facades\Toastr;
@@ -171,12 +175,42 @@ class ServiceController extends Controller
                 'message' => 'Dịch vụ không tồn tại.',
             ], 404);
         }
-
+        //delete image
         $images = Image::where('services_id', $service->id)->get();
 
         foreach ($images as $image) {
             $image->delete();
         }
+
+        //delete booking
+        $bookings = Booking::where('services_id', $service->id)->get();
+
+        foreach ($bookings as $booking) {
+            $booking->delete();
+        }
+
+        //delete price
+        $prices = Price::where('services_id', $service->id)->get();
+
+        foreach ($prices as $price) {
+            $price->delete();
+        }
+
+        //delete rating
+        $ratings = Rating::where('services_id', $service->id)->get();
+
+        foreach ($ratings as $rating) {
+            $rating->delete();
+        }
+
+        //delete favorite
+        $favorites = Favorite::where('services_id', $service->id)->get();
+
+        foreach ($favorites as $favorite) {
+            $favorite->delete();
+        }
+
+
 
         $service->delete();
 

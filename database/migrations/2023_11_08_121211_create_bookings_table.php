@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->bigIncrements('id');
-
             $table->string('type_of_day', 50)->notNull();
             $table->integer('number_of_adults')->notNull();
             $table->integer('number_of_children')->notNull();

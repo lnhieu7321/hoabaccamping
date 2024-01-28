@@ -3,14 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Admin;
 use App\Models\Businesse;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
+
+
+
+
 
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
@@ -40,53 +48,37 @@ class ProfileController extends Controller
                 'phone' => $request->phone,
             ];
 
-            User::where('id', $request->id)->update($userUpdate);
+            User::where('id', Auth::user()->id)->update($userUpdate);
 
-
-            /*$business = Businesse::where('users_id', $request->id)->first();
+            $business = Businesse::where('users_id', Auth::user()->id)->first();
 
             if ($request->hasFile('image')) {
-                // Handle image update
                 $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
                     'folder' => 'logo',
                 ])->getSecurePath();
 
-                // Check if an existing image record exists for this service
+                $business->logo = $uploadedFileUrl;
+            }
 
+            $business->business_name = $request->business_name;
+            $business->address = $request->address;
+            $business->ward = $request->ward;
+            $business->district = $request->district;
+            $business->city = $request->city;
+            $business->fanpage_url = $request->fanpage_url;
+            $business->website_url = $request->website_url;
 
-                // If there is a business record, update it
-                if ($business) {
-                    // Upload logo to Cloudinary
+            $business->save();
 
-                    // Update the business record
-                    $businessUpdate = [
-                        'business_name' => $request->business_name,
-                        'logo' => $uploadedFileUrl,
-                        'address' => $request->address,
-                        'ward' => $request->ward,
-                        'district' => $request->district,
-                        'city' => $request->city,
-                    ];
-
-                    $business->update($businessUpdate);
-                } else {
-                    // If there is no business record, create a new one
-                    $business = new Businesse();
-                    $business->users_id = $request->id;
-                    $business->business_name = $request->business_name;
-                    $business->logo = $uploadedFileUrl;
-                    $business->address = $request->address;
-                    $business->ward = $request->ward;
-                    $business->district = $request->district;
-                    $business->city = $request->city;
-
-                    $business->save();
-                }
-            }*/
 
             DB::commit();
-            Toastr::success('Updated user and business information successfully!', 'Success');
-            return redirect()->route('/dashboard');
+            Toastr::success('Updated successfully!', 'Success');
+
+            return redirect()->route('dashboard')->with('toastr', [
+                'type' => 'success',
+                'message' => 'Updated user and business information successfully!',
+                'title' => 'Success'
+            ]);
         } catch (\Exception $e) {
             DB::rollback();
             Toastr::error('Update failed. Please try again.', 'Error');
@@ -96,7 +88,38 @@ class ProfileController extends Controller
 
 
 
-    /**
-     * Update the user's profile information.
-     */
+
+    //đổi pass
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function index()
+    {
+        return view('business.profile.changePassword');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:8', 'confirmed']
+        ]);
+
+        $currentPasswordStatus = Hash::check($request->current_password, auth()->user()->password);
+        if ($currentPasswordStatus) {
+
+            User::findOrFail(Auth::user()->id)->update([
+                'password' => Hash::make($request->password),
+            ]);
+
+            Toastr::success('Updated user and business information successfully!', 'Success');
+            return redirect()->route('dashboard');
+        } else {
+
+            Toastr::error('Update failed. Please try again.', 'Error');
+            return redirect()->back();
+        }
+    }
 }

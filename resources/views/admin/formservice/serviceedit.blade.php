@@ -1,7 +1,5 @@
-@extends('admin.layouts.allbooking')
-@section('menu')
-@extends('admin.sidebar.allservice')
-@endsection
+@extends('admin.layouts.allservice')
+
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}
@@ -35,7 +33,7 @@
                             <div class="form-group">
                                 <label>Mô tả</label>
                                 <div>
-                                    <input type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $service->description }}">
+                                    <textarea type="text" class="form-control @error('description') is-invalid @enderror" name="description" id="description">{{ $service->description }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -99,15 +97,6 @@
         </form>
     </div>
 </div>
-@section('script')
-<script>
-    $(function() {
-        $('#datetimepicker3').datetimepicker({
-            format: 'LT'
-        });
-    });
-</script>
-
 <script>
     const imageInput = document.querySelector('input[type="file"]');
     const previewImage = document.querySelector('#preview-image');
@@ -123,6 +112,31 @@
         reader.readAsDataURL(file);
     });
 </script>
+@section('script')
+<script>
+    $(function() {
+        $('#datetimepicker3').datetimepicker({
+            format: 'LT'
+        });
+    });
+</script>
 @endsection
 
+@endsection
+@section('js-custom')
+<script>
+    ClassicEditor.create(document.querySelector('#description'), {
+        // Hoặc CKEDITOR.ENTER_DIV
+        dataProcessor: {
+            htmlFilter: function(value) {
+                // Loại bỏ tất cả các thẻ HTML, bao gồm thẻ tự đóng và thẻ chứa nội dung
+                return value.replace(/<\/?[^>]+>/g, '');
+            }
+        },
+        contentFilter: {
+            // Chỉ cho phép văn bản thuần túy
+            allowedContent: true
+        }
+    });
+</script>
 @endsection

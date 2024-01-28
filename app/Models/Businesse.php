@@ -19,9 +19,9 @@ class Businesse extends Model
         'ward',
         'district',
         'city',
-        'country',
         'fanpage_url',
         'website_url',
+        'users_id',
     ];
 
     public function users()

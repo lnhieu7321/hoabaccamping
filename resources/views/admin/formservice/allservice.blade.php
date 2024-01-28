@@ -1,7 +1,5 @@
-@extends('admin.layouts.allbooking')
-@section('menu')
-@extends('admin.sidebar.allservice')
-@endsection
+@extends('admin.layouts.allservice')
+
 @section('content')
 {{-- message --}}
 {!! Toastr::message() !!}
@@ -11,7 +9,13 @@
             <div class="row align-items-center">
                 <div class="col">
                     <div class="mt-5">
-                        <h4 class="card-title float-left mt-2">Quản lý dịch vụ</h4>
+                        <h4 class="card-title float-left mt-4">Quản lý dịch vụ</h4>
+                        <div class="top-nav-search float-left">
+                            <form method="get" action="{{route('adminsearch.service')}}">
+                                <input type="search" name="query" placeholder="Tìm kiếm..." class="form-control">
+                                <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+                            </form>
+                        </div>
                         <a href="{{ route('form/adserviceadd') }}" class="btn btn-primary float-right veiwbutton ">Thêm</a>
                     </div>
                 </div>
@@ -21,8 +25,10 @@
             <div class="col-sm-12">
                 <div class="card card-table">
                     <div class="card-body booking_card">
+                        <div class="col-sm-3">
+                        </div>
                         <div class="table-responsive">
-                            <table class="datatable table table-stripped table table-hover table-center mb-0">
+                            <table class="datatable table table-stripped table table-hover table-center mb-0 table-filter b-t b-light" id="myTable">
                                 <thead>
                                     <tr>
                                         <th>Mã dịch vụ</th>
@@ -109,6 +115,7 @@
         </div>
     </div>
     {{-- End Model delete --}}
+
 </div>
 
 @endsection

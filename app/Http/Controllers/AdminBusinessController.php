@@ -112,4 +112,17 @@ class AdminBusinessController extends Controller
             return redirect()->back();
         }
     }
+    public function search(Request $request)
+    {
+        $search_text = $_GET['query'] ?? '';
+
+        $allbusinesses = User::where(function ($query) use ($search_text) {
+            $query->where('id', 'like', '%' . $search_text . '%');
+        })
+            ->orWhereHas('businesses', function ($query) use ($search_text) {
+                $query->where('business_name', 'like', '%' . $search_text . '%');
+            })
+            ->orderByDesc('id')->get();
+        return view('admin.formbusiness.allbusiness', compact('allbusinesses'));
+    }
 }

@@ -129,4 +129,17 @@ class AdminUserController extends Controller
             return redirect()->back();
         }
     }
+    public function search(Request $request)
+    {
+        $search_text = $_GET['query'] ?? '';
+
+        $allcustomers = User::where(function ($query) use ($search_text) {
+            $query->where('name', 'like', '%' . $search_text . '%');
+        })
+
+            ->orderByDesc('id')->get();
+
+
+        return view('admin.formuser.alluser', compact('allcustomers'));
+    }
 }

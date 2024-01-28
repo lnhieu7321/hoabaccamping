@@ -13,7 +13,6 @@ class Booking extends Model
     protected $fillable = [
         'type_of_day',
         'number_of_adults',
-        'number_of_children',
         'start_date',
         'end_date',
         'total_cost',
